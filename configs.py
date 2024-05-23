@@ -25,7 +25,7 @@ prompt = 'please translate the following galgame conversations from Japanese to 
 
 # the time to wait for the answer from the chatbot. If the bot waits too short, error may occur.
 # 等待聊天机器人回答的时间。如果等待时间太短，可能会出现错误。
-answer_waiting_time = 10
+answer_waiting_time = 5
 
 # the maximum number of lines to input to ChatGPT each time
 # 每次输入ChatGPT的最大行数

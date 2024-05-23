@@ -31,10 +31,12 @@ class ChatGPT_Client:
     # /html/body/div[3]/div/div/div/div[2]/div
     info_screen_xpath = '/html/body/div[3]/div/div/div/div[2]/div'
 
-    chatbox_cq  = 'text-base'
+    chatbox_cq  = 'text-message'
     wait_cq     = 'text-2xl'
     reset_xq    = '//a[text()="New chat"]'
     regen_xq    = '//div[text()="Regenerate response"]'
+    stopbutton_xq = '//button[@data-testid="fruitjuice-stop-button"]'
+    startbutton_xq = '//button[@data-testid="fruitjuice-send-button"]'
 
     def __init__(
         self,
@@ -290,14 +292,17 @@ class ChatGPT_Client:
         except Exception as exp:
             logging.error('Try regenerating')
             self.regenerate_response()
-            return 'error'
+            return 'regeneration error occurred'
         for each_line in question.split('\n'):
             text_area.send_keys(each_line)
             text_area.send_keys(Keys.SHIFT + Keys.ENTER)
         text_area.send_keys(Keys.RETURN)
         logging.info('Message sent, waiting for response')
         time.sleep(self.answer_wating_time)
-        self.wait_to_disappear(By.CLASS_NAME, self.wait_cq)
+        # self.wait_to_disappear(By.CLASS_NAME, self.wait_cq)
+        self.sleepy_find_element(By.XPATH, self.stopbutton_xq, attempt_count=60)
+        self.sleepy_find_element(By.XPATH, self.startbutton_xq, attempt_count=60)
+        time.sleep(self.answer_wating_time)
         answer = self.browser.find_elements(By.CLASS_NAME, self.chatbox_cq)[-1]
         logging.info('Answer is ready')
         return answer.text

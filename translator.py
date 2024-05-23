@@ -138,10 +138,16 @@ class Translator:
                             self.create_chatgpt()
                             
                         answer = self.translate_once(batch)
-                        if 'error' in answer:
+                        if ' error occurred ' in answer:
                             logging.info('Error in response')
                             raise Exception('Error in response')
                         if 'cap' in answer:  # reach the capacity. 达到了ChatGPT4上限
+                            self.start = time.time()
+                            logging.info('cap detected, wait for 1 hours')
+                            while time.time() < self.start + 3600:
+                                time.sleep(60)
+                            raise Exception('cap detected')
+                        if 'reached our limit of messages' in answer:  # reach the capacity.
                             self.start = time.time()
                             logging.info('cap detected, wait for 1 hours')
                             while time.time() < self.start + 3600:
